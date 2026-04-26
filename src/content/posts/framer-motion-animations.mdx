@@ -1,0 +1,29 @@
+---
+title: 'Framer Motion 动效实用技巧'
+description: '总结在日常开发中常用的 Framer Motion 动画模式和最佳实践。'
+date: 2026-04-20
+tags: [技术, 动画]
+cover: https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop
+---
+
+## 入门
+
+Framer Motion 是 React 生态中最流行的动画库之一。
+
+### 基本动画
+
+```tsx
+<motion.div
+  animate={{ x: 100, opacity: 1 }}
+  transition={{ duration: 0.5 }}
+/>
+```
+
+### 手势动画
+
+```tsx
+<motion.div
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+/>
+```

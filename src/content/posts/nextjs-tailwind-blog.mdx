@@ -1,0 +1,43 @@
+---
+title: '使用 Next.js + Tailwind CSS 搭建博客'
+description: '从头搭建一个现代化个人博客网站的完整技术方案总结。包含路由、样式、动效全链路讲解。'
+date: 2026-04-23
+tags: [技术, Next.js]
+cover: https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop
+---
+
+## 技术栈
+
+本博客采用以下技术栈构建：
+
+| 技术 | 用途 |
+|------|------|
+| Next.js (App Router) | 框架 |
+| Tailwind CSS v4 | 样式 |
+| Framer Motion | 动效 |
+| next-mdx-remote | MDX 渲染 |
+
+## 设计风格
+
+博客整体设计致敬 **安知鱼 (Anzhiyu)** 主题风格：
+
+### Cards 卡片化
+
+主要区块使用 `rounded-2xl` 圆角搭配柔和阴影。
+
+### Glassmorphism 毛玻璃
+
+导航栏使用毛玻璃效果：
+
+```css
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+}
+```
+
+### Dark Mode 暗黑模式
+
+通过 CSS 变量实现一键主题切换，动画丝滑流畅。
+
+> 持续更新中，敬请期待！
