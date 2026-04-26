@@ -38,7 +38,6 @@ export default async function ChapterPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 pt-24 pb-20 sm:pt-32">
-      {/* Back link */}
       <Link
         href="/novel"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary transition-colors"
@@ -50,7 +49,6 @@ export default async function ChapterPage({
       </Link>
 
       <article className="card p-6 sm:p-10">
-        {/* Chapter header */}
         <header className="mb-8 text-center">
           <span className="text-xs font-medium text-primary">
             {chapter.novel}
@@ -60,17 +58,14 @@ export default async function ChapterPage({
           </h1>
         </header>
 
-        {/* Divider */}
         <div className="mb-8 flex items-center gap-3 text-text-tertiary/40">
           <div className="h-px flex-1 bg-border" />
           <span className="text-xs">✦</span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        {/* Chapter content */}
         <ChapterContent content={chapter.content} />
 
-        {/* Bottom nav */}
         <div className="mt-12 flex items-center justify-between border-t border-border pt-6">
           <Link
             href="/novel"
