@@ -8,6 +8,7 @@ import { ThemeToggle } from './ThemeToggle';
 const navLinks = [
   { href: '/', label: '首页' },
   { href: '/blog', label: '文章' },
+  { href: '/novel', label: '小说' },
   { href: '/about', label: '关于我' },
 ];
 
