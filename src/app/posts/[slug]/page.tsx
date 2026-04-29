@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getAllPosts, getPostBySlug } from '@/lib/mdx';
 import { MDXContent } from '@/components/MDXContent';
+import { Comments } from '@/components/Comments';
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -123,6 +124,11 @@ export default async function PostPage({
             全部文章
           </Link>
           <span className="text-xs text-text-tertiary">{post.date}</span>
+        </div>
+
+        {/* Giscus comments */}
+        <div className="mt-10 border-t border-border pt-10">
+          <Comments />
         </div>
       </div>
     </>

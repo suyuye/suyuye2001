@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { TypeWriter } from './TypeWriter';
+import { Avatar } from './Avatar';
 
 const floatingPaths = Array.from({ length: 6 }, (_, i) => ({
   id: i,
@@ -59,11 +60,9 @@ export function HeroSection() {
                 animation: 'breathing 3s ease-in-out infinite',
               }}
             />
-            {/* Avatar placeholder circle */}
+            {/* Avatar image */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-lg shadow-primary/30">
-                苏
-              </div>
+              <Avatar size="lg" />
             </div>
           </div>
           <style jsx>{`

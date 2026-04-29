@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { userConfig } from '@/config/userConfig';
-import { SocialIcon } from './SocialIcon';
 import { useTheme } from './ThemeProvider';
+import { Avatar } from './Avatar';
+import { SocialLinkItem } from './SocialLinkItem';
 
 /* ─── Deterministic hue from string ─── */
 function getHue(text: string) {
@@ -40,7 +41,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
    Profile Card — reads from userConfig
    ══════════════════════════════════════════════ */
 function ProfileCard({ postCount, tagCount }: { postCount: number; tagCount: number }) {
-  const { name, avatar, bio, social, interests } = userConfig;
+  const { name, bio, social, interests } = userConfig;
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
@@ -49,11 +50,7 @@ function ProfileCard({ postCount, tagCount }: { postCount: number; tagCount: num
       <div className="flex flex-col items-center text-center">
         {/* Avatar */}
         <div className="relative mb-4">
-          <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary to-primary-light p-0.5">
-            <div className="flex h-full w-full items-center justify-center rounded-full bg-bg-card text-2xl font-bold text-primary">
-              {avatar}
-            </div>
-          </div>
+          <Avatar size="md" />
           {/* Online dot */}
           <span className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-bg-card bg-green-500" />
         </div>
@@ -133,16 +130,7 @@ function ProfileCard({ postCount, tagCount }: { postCount: number; tagCount: num
         {/* Social links — driven by config */}
         <div className="mt-4 flex items-center gap-2">
           {social.map((link) => (
-            <a
-              key={link.label}
-              href={link.url}
-              target={link.url.startsWith('http') ? '_blank' : undefined}
-              rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-              aria-label={link.label}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-primary-bg hover:text-primary"
-            >
-              <SocialIcon icon={link.icon} className="h-4.5 w-4.5" />
-            </a>
+            <SocialLinkItem key={link.label} link={link} />
           ))}
         </div>
 
