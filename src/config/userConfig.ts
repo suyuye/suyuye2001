@@ -31,7 +31,7 @@ export const userConfig: UserConfig = {
   location: '重庆',
   age: 25,
   major: '数字媒体技术',
-  bio: '保持好奇，持续学习',
+  bio: '站在暴雨里，我比它更磅礴。',
 
   currentRole: '亚马逊卖家支持',
   targetRole: 'Shopify 运营与开发',
@@ -41,10 +41,10 @@ export const userConfig: UserConfig = {
  social: [
     { label: 'GitHub', url: 'https://github.com/suyuye', icon: 'github' },
     // 替换了 Twitter 为 QQ，直接唤起聊天
-    { label: 'QQ', url: 'http://wpa.qq.com/msgrd?v=3&uin=319325952&site=qq&menu=yes', icon: 'qq' }, 
+    { label: 'QQ', url: 'https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/qq1.jpg', icon: 'qq' }, 
     { label: 'Email', url: 'mailto:suyuye2001@163.com', icon: 'email' },
     // 微信设置为锚点链接，稍后配合代码实现弹窗显示二维码
-    { label: '微信', url: '#wechat', icon: 'wechat' }, 
+    { label: '微信', url: 'https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/wechat2.jpg', icon: 'wechat' }, 
     { label: 'RSS', url: '/blog', icon: 'rss' },
   ],
 

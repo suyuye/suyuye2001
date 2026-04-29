@@ -94,10 +94,10 @@ export function HeroSection() {
         >
           <TypeWriter
             strings={[
-              '记录技术、设计与生活',
-              '用文字定格思考',
-              '用代码创造价值',
-              '保持好奇，持续学习',
+              '站在暴雨里，我比它更磅礴。',
+              '往事暗沉不可追，来日之路光明灿烂。',
+              '劝君莫惜金缕衣，劝君惜取少年时。',
+              'per aspera ad astra',
             ]}
             typeSpeed={70}
             deleteSpeed={40}
