@@ -65,12 +65,12 @@ function PostCard({
             <div className="flex flex-1 flex-col justify-center p-5 sm:p-6">
               {/* Meta */}
               <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
-                <time>{post.date}</time>
+                <time className="whitespace-nowrap">{post.date}</time>
                 <span>·</span>
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-primary-bg px-2.5 py-0.5 text-primary font-medium"
+                    className="h-fit whitespace-nowrap rounded-full bg-primary-bg px-2.5 py-0.5 text-primary font-medium"
                   >
                     {tag}
                   </span>

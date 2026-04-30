@@ -12,21 +12,19 @@ export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
       transition={{ duration: 0.4, delay: index * 0.08 }}
     >
       <Link href={`/posts/${post.slug}`} className="block card-hover p-6">
-        <div className="flex items-center gap-2 text-xs text-text-tertiary mb-3">
-          <time>{post.date}</time>
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
+          <time className="whitespace-nowrap">{post.date}</time>
           {post.tags && post.tags.length > 0 && (
             <>
               <span>·</span>
-              <div className="flex gap-1.5">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-primary-bg px-2.5 py-0.5 text-primary text-xs font-medium"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="h-fit whitespace-nowrap rounded-full bg-primary-bg px-2.5 py-0.5 text-primary text-xs font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
             </>
           )}
         </div>

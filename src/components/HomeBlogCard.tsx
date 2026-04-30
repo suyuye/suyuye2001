@@ -18,12 +18,12 @@ export function HomeBlogCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Link href={`/posts/${post.slug}`} className="card-hover block p-6 h-full">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-text-tertiary mb-3">
-          <time>{post.date}</time>
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
+          <time className="whitespace-nowrap">{post.date}</time>
           {post.tags?.slice(0, 2).map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-primary-bg px-2 py-0.5 text-primary font-medium"
+              className="h-fit whitespace-nowrap rounded-full bg-primary-bg px-2.5 py-0.5 text-primary font-medium"
             >
               {tag}
             </span>
