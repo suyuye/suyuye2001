@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/blog', label: '文章' },
   { href: '/novel', label: '小说' },
   { href: '/album', label: '相册' },
+  { href: '/music', label: '音乐' },
   { href: '/about', label: '关于我' },
 ];
 
