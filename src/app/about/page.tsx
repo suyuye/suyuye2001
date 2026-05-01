@@ -94,7 +94,7 @@ export default async function AboutPage() {
         <section className="card p-6 sm:p-10">
           <SectionTitle>音乐空间</SectionTitle>
           <p className="mt-2 text-sm text-text-tertiary">
-            说唱是流淌在代码之外的另一种节奏。这里记录着我的音乐探索。
+            音乐是流淌在代码之外的另一种节奏。这里记录着我的音乐分享。
           </p>
           <div className="mt-6">
             {fetchError ? (
