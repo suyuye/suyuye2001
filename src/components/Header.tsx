@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/novel', label: '小说' },
   { href: '/album', label: '相册' },
   { href: '/music', label: '音乐' },
+  { href: '/movies', label: '观影' },
   { href: '/about', label: '关于我' },
 ];
 
@@ -36,7 +37,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="mr-8 shrink-0">
           <span className="text-lg font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">
-            苏羽野的博客
+            苏羽野
           </span>
         </Link>
 

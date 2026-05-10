@@ -1,4 +1,4 @@
-import { AlbumGrid } from '@/components/AlbumGrid';
+import { AlbumGate } from '@/components/AlbumGate';
 import type { AlbumPhoto } from '@/components/AlbumGrid';
 
 const GITHUB_API = 'https://api.github.com/repos/suyuye/blog-images/contents/album';
@@ -56,7 +56,7 @@ export default async function AlbumPage() {
           <p className="mt-1 text-sm">{error}</p>
         </div>
       ) : (
-        <AlbumGrid photos={photos} />
+        <AlbumGate photos={photos} />
       )}
     </div>
   );

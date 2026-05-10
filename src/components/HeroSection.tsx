@@ -81,7 +81,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <span className="bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-            苏羽野的博客
+            可我不是苏羽野
           </span>
         </motion.h1>
 
