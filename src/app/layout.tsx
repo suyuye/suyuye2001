@@ -21,8 +21,8 @@ const OG_IMAGE = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w
 export const metadata: Metadata = {
   metadataBase: new URL('https://suyuye-boke.netlify.app/'),
   title: {
-    default: '苏羽野的数字空间',
-    template: '%s | 苏羽野的数字空间',
+    default: '苏羽野2026-2027',
+    template: '%s | 苏羽野2026-2027',
   },
   description:
     '一个独立开发者的数字花园 — 记录技术探索、说唱音乐创作，以及生活中的光影碎片。',
@@ -52,8 +52,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
-    siteName: '苏羽野的数字空间',
-    title: '苏羽野的数字空间',
+    siteName: '苏羽野2026-2027',
+    title: '苏羽野2026-2027',
     description:
       '一个独立开发者的数字花园 — 记录技术探索、说唱音乐创作，以及生活中的光影碎片。',
     images: [
@@ -61,13 +61,13 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: '苏羽野的数字空间',
+        alt: '苏羽野2026-2027',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: '苏羽野的数字空间',
+    title: '苏羽野2026-2027',
     description:
       '一个独立开发者的数字花园 — 记录技术探索、说唱音乐创作，以及生活中的光影碎片。',
     images: [OG_IMAGE],

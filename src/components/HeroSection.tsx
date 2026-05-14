@@ -4,42 +4,30 @@ import { motion } from 'framer-motion';
 import { TypeWriter } from './TypeWriter';
 import { Avatar } from './Avatar';
 
-const floatingPaths = Array.from({ length: 6 }, (_, i) => ({
-  id: i,
-  d: `M${10 + i * 15} ${20 + i * 8} Q${40 + i * 10} ${5 + i * 12} ${70 + i * 5} ${25 + i * 6}`,
-}));
+const blobs = [
+  { color: 'bg-blue-400', size: 'w-72 h-72', left: 'left-[5%]', top: 'top-[10%]', duration: 25, x: [0, 40, -20, 0], y: [0, -30, 20, 0] },
+  { color: 'bg-purple-400', size: 'w-96 h-96', left: 'right-[10%]', top: 'top-[5%]', duration: 30, x: [0, -30, 25, 0], y: [0, 25, -15, 0] },
+  { color: 'bg-indigo-300', size: 'w-64 h-64', left: 'left-[40%]', top: 'bottom-[15%]', duration: 28, x: [0, 25, -35, 0], y: [0, -20, 15, 0] },
+];
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 dark:from-primary/10 dark:via-transparent dark:to-primary/10" />
-        <svg
-          className="absolute inset-0 h-full w-full opacity-30 dark:opacity-20"
-          viewBox="0 0 100 40"
-          preserveAspectRatio="none"
-        >
-          {floatingPaths.map((p) => (
-            <motion.path
-              key={p.id}
-              d={p.d}
-              fill="none"
-              stroke="var(--primary)"
-              strokeWidth="0.15"
-              strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.4 }}
-              transition={{
-                duration: 4,
-                delay: p.id * 0.3,
-                repeat: Infinity,
-                repeatType: 'reverse',
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
-        </svg>
+    <section className="relative flex min-h-[55vh] items-center justify-center overflow-hidden">
+      {/* Slow-moving blurry blobs */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        {blobs.map((blob, i) => (
+          <motion.div
+            key={i}
+            className={`absolute ${blob.size} ${blob.left} ${blob.top} ${blob.color} rounded-full opacity-10 blur-3xl`}
+            animate={{ x: blob.x, y: blob.y }}
+            transition={{
+              duration: blob.duration,
+              repeat: Infinity,
+              repeatType: 'reverse',
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
       </div>
 
       {/* Content */}
@@ -80,7 +68,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <span className="bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+          <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
             可我不是苏羽野
           </span>
         </motion.h1>
@@ -125,6 +113,20 @@ export function HeroSection() {
             关于我
           </a>
         </motion.div>
+      </div>
+
+      {/* Wave divider — sits above blobs, below content */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px] z-0 pointer-events-none">
+        <svg
+          viewBox="0 0 1440 100"
+          preserveAspectRatio="none"
+          className="block w-full h-10 md:h-16 lg:h-20"
+        >
+          <path
+            d="M0,50 C320,100 420,0 740,50 C1060,100 1120,0 1440,50 L1440,100 L0,100 Z"
+            className="fill-bg"
+          />
+        </svg>
       </div>
     </section>
   );

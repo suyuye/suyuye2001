@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://suyuye-blog.vercel.app';
+  const baseUrl = 'https://suyuye-boke.netlify.app';
 
   const coreRoutes: MetadataRoute.Sitemap = [
     {
@@ -20,12 +20,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/lab`,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/music`,
       changeFrequency: 'weekly',
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/movies`,
+      url: `${baseUrl}/lyrics`,
       changeFrequency: 'weekly',
       priority: 0.7,
     },

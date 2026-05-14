@@ -37,19 +37,23 @@ function PostCard({
       transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.4) }}
     >
       <Link href={`/posts/${post.slug}`} className="group block">
-        <article className="card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <article className="card overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-primary/10 hover:-translate-y-1">
           <div
             className={`flex flex-col ${isOdd ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
           >
             {/* Cover image */}
             <div className="relative sm:w-[38%] shrink-0 overflow-hidden">
               {post.cover && !imgError ? (
-                <img
-                  src={post.cover}
-                  alt={post.title}
-                  className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110 sm:h-full"
-                  onError={() => setImgError(true)}
-                />
+                <>
+                  <img
+                    src={post.cover}
+                    alt={post.title}
+                    className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:h-full"
+                    onError={() => setImgError(true)}
+                  />
+                  {/* Gradient overlay — transparent → card bg for smooth blend */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-card pointer-events-none" />
+                </>
               ) : (
                 <div
                   className={`h-52 w-full bg-gradient-to-br ${gradientFromSlug(post.slug, index)} sm:h-full flex items-center justify-center`}

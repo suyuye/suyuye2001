@@ -99,6 +99,19 @@ body {
   background: #3a3a52;
 }
 
+@utility scrollbar-thin {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 2px;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    background: var(--text-tertiary);
+  }
+}
+
 /* ===== Glass utility ===== */
 @utility glass {
   background: var(--bg-glass);

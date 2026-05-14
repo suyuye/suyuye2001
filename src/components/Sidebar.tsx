@@ -93,20 +93,25 @@ function ProfileCard({ postCount, tagCount }: { postCount: number; tagCount: num
           <p className="mb-2.5 text-xs font-medium text-text-tertiary/70 tracking-wide">
             ✦ 兴趣标签
           </p>
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-3">
             {interests.map((interest) => {
               const hue = getHue(interest);
+              const bgColor = isDark
+                ? `hsl(${hue}, 28%, 22%)`
+                : `hsl(${hue}, 52%, 88%)`;
+              const bgColorHover = isDark
+                ? `hsl(${hue}, 32%, 18%)`
+                : `hsl(${hue}, 56%, 82%)`;
+              const textColor = isDark
+                ? `hsl(${hue}, 72%, 74%)`
+                : `hsl(${hue}, 62%, 36%)`;
               return (
                 <motion.span
                   key={interest}
                   className="inline-block rounded-full px-3 py-1 text-xs font-medium cursor-default select-none"
                   style={{
-                    backgroundColor: isDark
-                      ? `hsl(${hue}, 28%, 22%)`
-                      : `hsl(${hue}, 52%, 88%)`,
-                    color: isDark
-                      ? `hsl(${hue}, 72%, 74%)`
-                      : `hsl(${hue}, 62%, 36%)`,
+                    backgroundColor: bgColor,
+                    color: textColor,
                   }}
                   animate={{
                     y: [0, -3, 0, 2, 0],
@@ -118,7 +123,12 @@ function ProfileCard({ postCount, tagCount }: { postCount: number; tagCount: num
                     ease: 'easeInOut',
                     delay: (hue % 10) * 0.12,
                   }}
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={{
+                    scale: 1.08,
+                    y: -4,
+                    backgroundColor: bgColorHover,
+                    transition: { duration: 0.2 },
+                  }}
                 >
                   {interest}
                 </motion.span>
