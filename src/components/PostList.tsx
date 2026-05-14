@@ -51,8 +51,10 @@ function PostCard({
                     className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105 sm:h-full"
                     onError={() => setImgError(true)}
                   />
-                  {/* Gradient overlay — transparent → card bg for smooth blend */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-card pointer-events-none" />
+                  {/* Bottom fade — mobile */}
+                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-bg-card via-bg-card/30 to-transparent pointer-events-none sm:hidden" />
+                  {/* Right fade — desktop */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-card pointer-events-none hidden sm:block" />
                 </>
               ) : (
                 <div

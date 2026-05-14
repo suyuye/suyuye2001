@@ -12,7 +12,7 @@ const blobs = [
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-[55vh] items-center justify-center overflow-hidden">
+    <section className="relative flex min-h-[55vh] items-center justify-center overflow-hidden pt-20 sm:pt-28">
       {/* Slow-moving blurry blobs */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {blobs.map((blob, i) => (

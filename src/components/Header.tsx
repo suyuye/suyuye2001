@@ -13,7 +13,7 @@ const navLinks = [
   { href: '/album', label: '相册' },
   { href: '/lab', label: '实验室' },
   { href: '/music', label: '音乐' },
-  { href: '/lyrics', label: '歌词' },
+  { href: '/lyrics', label: '笔下' },
   { href: '/about', label: '关于我' },
 ];
 
