@@ -11,10 +11,10 @@ const navLinks = [
   { href: '/blog', label: '文章' },
   { href: '/novel', label: '小说' },
   { href: '/album', label: '相册' },
-  { href: '/lab', label: '实验室' },
   { href: '/music', label: '音乐' },
   { href: '/lyrics', label: '笔下' },
   { href: '/about', label: '关于我' },
+  { href: '/lab', label: '实验室' },
 ];
 
 export function Header() {

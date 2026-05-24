@@ -28,10 +28,11 @@ export const projects: Project[] = [
   },
   {
     id: '3',
-    title: 'DIY 智能音箱中枢',
+    title: 'DIY 旺仔音响免开孔版',
     description:
-      '从零折腾的硬件探索项目，打通底层硬件逻辑与网络通信的极客实践。',
-    techStack: ['Hardware DIY', 'IoT', 'Network'],
+      '用 Blender Python API 参数化生成方圆柱音箱外壳，攻克嘉立创 70cm³ 免费额度限制与水密性检测，从建模到打印全流程极客实战。',
+    techStack: ['Blender bpy', '3D Printing', 'Python', 'Parametric Design'],
     icon: '🔊',
+    demoLink: '/posts/sound-diy',
   },
 ];

@@ -1,0 +1,208 @@
+---
+title: "🚀 极客 DIY 记录：旺仔音响 用 Blender Python 从零生成完美 3D 打印音箱外壳"
+date: "2026-05-24"
+tags: ["3D打印", "Blender", "Python", "硬件DIY", "极客折腾"]
+description: "分享如何使用 Blender 的 Python API（bpy），参数化构建一个“方圆柱”造型的音箱外壳，并完美避开嘉立创打样体积限制和非流形报错的终极方案（附完整源码）。"
+cover: "https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260524172817_141_230.jpg"
+---
+
+之前看网上有很多用旺仔罐改装小音响的教程，但是我又懒得开孔，主要是太麻烦了，所以我就想能否用3d打印代替，但是3d打印的话成本又上去了，首先需要建模，还有3d打印费用，这篇文章主要是用来规避建模麻烦和3d打印费用的。
+
+用AI建模和嘉立创的免费打印额度无难度执行。
+
+在这篇文章中，我将分享如何使用 Blender 的 Python API（`bpy`），一步步参数化构建一个“方圆柱”（Squircle）造型的音箱外壳。在这期间，我不仅优化了内部布线布局，还和 3D 打印平台的检测系统进行了几轮“斗智斗勇”，最终摸索出了一套 100% 水密（Watertight）、完美过审的终极建模方案。
+
+如果你也想白嫖嘉立创的 3D 打印免费券，或者对参数化建模感兴趣，这篇记录绝对能帮你避开无数个坑！
+
+---
+
+## 💡 第一版：确立“方圆柱”雏形与体积保卫战
+
+一开始，我的目标是做一款类似苹果 HomePod 的精致桌面音箱。外壳设计为“方圆柱”（既有方形的走线死角，又有圆柱的圆润握感），内部需要塞下以下元件：
+
+*   **1 个 52mm 全频喇叭**
+*   **1 个底部低音辐射盆**
+*   **2 节 21700 锂电池 10000毫安（因为我的喇叭买成10w的了，18500带不动，改版后的模型内部空间够大，直接上10000了）**
+*   **2 个 12mm 带有长引脚的金属复位开关**
+*   **1 个 Type-C 充电板**
+*   **当然其他工具和耗材并没有写，例如止震隔音，配重块，胶水，led灯带（买30灯的即可，大了也带不动），防丢绳等。 
+
+> **🚨 踩坑点 1：嘉立创的“70cm³ 免费生死线”**
+> 最初我设定的外围尺寸是 70mm × 70mm。然而，由于方圆形的四个角保留了大量实体树脂，算出体积竟然达到了 73.5 cm³，直接超出了嘉立创 70 cm³ 的免费打样额度限制！
+>
+> **✅ 优化方案：**
+> 我将外围边长极限微调缩减至 67mm，壁厚保持 2mm。内部 63mm 的空间依然足够塞下 52mm 喇叭，而整体体积锐减到了安全线内（约 66 cm³），成功保住了免费券。
+
+---
+
+## 📐 第二版：产品级设计——上下倒角与“基准线”布局
+
+为了让打印出来的外壳摆脱“廉价塑料感”，并在打印时避免底层接触热床产生“大象腿”瑕疵，我在代码中加入了基于角度阈值的智能倒角：自动识别上下 90 度边缘，赋予 1.5mm 的高级圆润过渡。
+
+> **🚨 踩坑点 2：元件“撞车”的布线噩梦**
+> 新手在设计开孔时往往喜欢“绝对对称”，比如把所有开关和 Type-C 全挤在背面中间。但在实际组装时，12mm 金属开关背后长长的引脚会直接撞上中间的电池和喇叭磁铁，根本无法走线！
+>
+> **✅ 优化方案：全向水平基准线布局**
+> 我引入了高端数码产品的“水平基准线”设计理念，将孔位彻底分离：
+> *   **背面（充电区）：** Type-C 接口居中到底部。
+> *   **正面（交互区）：** 双开关移至正面。
+> *   **侧面（便携区）：** 右下角打一个直径仅 2mm 的精致挂绳孔。
+> 
+> **最绝的是**，我将正面底部的开关与背面的 Type-C 开孔，在代码中统一锁定在了 `Z = -0.028` 的绝对高度。飞线不仅彻底物理隔离，外观上还形成了一条极具秩序感的“隐形腰线”。
+
+---
+
+## 🛠️ 第三版（终极版）：战胜“反向面”报错，实现 100% 绝对水密！
+
+拿着修改好的 STL 去上传，嘉立创的系统却给我亮了红灯：“模型存在异常、干涉相交、反向三角面”。
+
+> **🚨 踩坑点 3：布尔灾难与非流形几何**
+> 原因是：我之前在代码里生成方圆柱时，用的是“挤出一个圈，然后用平面盖住顶部和底部，最后合并（Join）”的野路子算法。在微观层面，盖子和墙壁的顶点并没有完美融合。切片软件在处理开孔和倒角时，法线计算直接崩溃，导致模型“漏水（Non-manifold）”。
+>
+> **✅ 终极破局方案：底层实体化（Solidify）重构**
+> 为了彻底消灭报错，我放弃了拼盖子的做法，直接借助 Blender 最强大的算法重构了核心几何：
+> 1. 画一个完美的 2D 圆角正方形平面。
+> 2. 用 `SOLIDIFY`（实体化）修改器，让平面双向生长成一个完美的实心铁块。
+> 3. 内部挖空用的工具，也用同样的算法生成一个完美实心体。
+> 4. 用“实心切实心”，生成的模型是数学意义上 **100% 绝对水密（Watertight）** 的！
+
+
+
+![图片加载失败](https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260524172505_139_230.jpg)
+*初始版*
+
+![图片加载失败](https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260524172504_138_230.jpg)
+*改良版*
+
+![图片加载失败](https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260524172609_140_230.jpg)
+*对比图*
+
+
+---
+
+## 💻 附：最终纯净完美版 Python 源码
+
+如果你也想生成这个完美的方圆柱音箱外壳，打开 Blender，进入 Scripting（脚本）工作区，新建一个文本并粘贴以下代码运行即可（如果你想直接获得我创建完成的stl模型，也可加我的联系方式获取。）：
+
+```python
+import bpy
+import math
+
+# 核心魔法：生成 100% 绝对水密实心块的函数
+def create_solid_chamfered_box(size, bevel_r, height, name):
+    # 1. 创建 2D 基础平面
+    bpy.ops.mesh.primitive_plane_add(size=size, location=(0, 0, 0))
+    obj = bpy.context.active_object
+    obj.name = name
+    
+    # 2. 完美倒角四周
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_mode(type="VERT")
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.bevel(offset=bevel_r, segments=16, vertex_only=True)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    
+    # 3. 借助 Solidify 算法，直接生长为无缝实心体！(杜绝一切反向面)
+    solid_mod = obj.modifiers.new(name="MakeSolid", type='SOLIDIFY')
+    solid_mod.thickness = height
+    solid_mod.offset = 0.0 # 居中双向生长
+    bpy.ops.object.modifier_apply(modifier=solid_mod.name)
+    
+    return obj
+
+def create_wangzai_watertight_version():
+    # 1. 彻底清理场景
+    bpy.ops.object.select_all(action='DESELECT')
+    for obj in bpy.context.scene.objects:
+        if obj.type in ['MESH', 'CURVE', 'FONT']:
+            obj.select_set(True)
+    bpy.ops.object.delete()
+
+    # --- 核心尺寸参数 ---
+    CAN_HEIGHT = 0.100    # 高度 10cm
+    SQ_OUTER_SIZE = 0.067 # 外围 67mm
+    SQ_BEVEL_R = 0.015    # 倒角 15mm
+    WALL_THICK = 0.002    # 壁厚 2mm
+    SQ_INNER_SIZE = SQ_OUTER_SIZE - (WALL_THICK * 2) 
+    SQ_INNER_BEVEL = SQ_BEVEL_R - WALL_THICK
+
+    # 2. 生成完美实心主壳 (默认居中于 Z: -0.05 到 0.05)
+    shell = create_solid_chamfered_box(SQ_OUTER_SIZE, SQ_BEVEL_R, CAN_HEIGHT, "Speaker_Watertight")
+    
+    # 上下 1.5mm 产品级倒角
+    bev_base = shell.modifiers.new(name="TopBottomChamfer", type='BEVEL')
+    bev_base.limit_method = 'ANGLE'
+    bev_base.angle_limit = math.radians(45) 
+    bev_base.width = 0.0015
+    bev_base.segments = 5
+    bpy.ops.object.modifier_apply(modifier=bev_base.name)
+    
+    cutters = []
+    
+    # A & B 顶部沉座(57mm)与喇叭孔(47mm)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=0.0285, depth=0.005, location=(0, 0, 0.048))
+    cutters.append(bpy.context.active_object)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=0.0235, depth=0.006, location=(0, 0, 0.043))
+    cutters.append(bpy.context.active_object)
+    
+    # C. 内部完美实心掏空块 (高度 0.086)
+    inner_cavity = create_solid_chamfered_box(SQ_INNER_SIZE, SQ_INNER_BEVEL, 0.086, "Inner_Cavity")
+    inner_cavity.location.z = -0.002 # 对齐：底部留 5mm 振膜座，顶部穿透
+    bpy.ops.object.transform_apply(location=True)
+    cutters.append(inner_cavity)
+    
+    # D. 底部辐射盆沉座 (62.5mm)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=0.03125, depth=0.006, location=(0, 0, -0.048))
+    cutters.append(bpy.context.active_object)
+    
+    # E. 正面水平对齐按键孔 (基准高度 Z=-0.028)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=0.00625, depth=0.04, location=(0, (SQ_OUTER_SIZE/2), -0.028))
+    sw1 = bpy.context.active_object
+    sw1.rotation_euler[0] = math.pi/2  
+    cutters.append(sw1)
+    
+    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=0.00625, depth=0.04, location=(0, (SQ_OUTER_SIZE/2), -0.008))
+    sw2 = bpy.context.active_object
+    sw2.rotation_euler[0] = math.pi/2  
+    cutters.append(sw2)
+    
+    # F. 背面 Type-C 充电孔 (基准高度 Z=-0.028)
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -(SQ_OUTER_SIZE/2), -0.028))
+    t_c_hole = bpy.context.active_object
+    t_c_hole.scale = (0.012, 0.04, 0.006) 
+    cutters.append(t_c_hole)
+    
+    # G. 侧边防丢绳孔 (2mm)
+    bpy.ops.mesh.primitive_cylinder_add(radius=0.001, depth=0.04, location=(0.031, 0, -0.038))
+    lanyard = bpy.context.active_object
+    lanyard.rotation_euler[1] = math.pi/2
+    cutters.append(lanyard)
+    
+    # 3. 极其顺滑的布尔切割
+    bpy.context.view_layer.objects.active = shell
+    for cutter in cutters:
+        bool_mod = shell.modifiers.new(name="Cut", type='BOOLEAN')
+        bool_mod.operation = 'DIFFERENCE'
+        bool_mod.object = cutter
+        bool_mod.solver = 'EXACT'
+        bpy.ops.object.modifier_apply(modifier=bool_mod.name)
+        bpy.data.objects.remove(cutter)
+        
+    # 4. 全局去毛刺与微距倒角
+    bpy.ops.object.shade_smooth()
+    bev_final = shell.modifiers.new(name="MicroBevel", type='BEVEL')
+    bev_final.width = 0.0003
+    bev_final.segments = 2
+    bev_final.limit_method = 'ANGLE'
+    bev_final.angle_limit = math.radians(30)
+    bpy.ops.object.modifier_apply(modifier=bev_final.name)
+    
+    # 5. 全选，强制重算所有法线朝外！
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    print("✅ 终极流形版生成完毕！几何底层 100% 完美。")
+
+create_wangzai_watertight_version()
