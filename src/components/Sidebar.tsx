@@ -221,29 +221,18 @@ function TagCloudCard({ tags }: { tags: string[] }) {
 export function Sidebar({ postCount, tagCount, tags }: SidebarProps) {
   return (
     <aside className="sticky top-24 flex flex-col gap-5">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.15 }}
-      >
+      {/* CSS 入场动画，不依赖 JS（motion 的 initial opacity:0 在弱网下会永久隐形） */}
+      <div className="animate-rise-in animate-delay-1">
         <ProfileCard postCount={postCount} tagCount={tagCount} />
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.25 }}
-      >
+      <div className="animate-rise-in" style={{ animationDelay: '0.25s' }}>
         <AnnouncementCard />
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-      >
+      <div className="animate-rise-in" style={{ animationDelay: '0.35s' }}>
         <TagCloudCard tags={tags} />
-      </motion.div>
+      </div>
     </aside>
   );
 }

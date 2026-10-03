@@ -20,11 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/lab`,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    {
       url: `${baseUrl}/music`,
       changeFrequency: 'weekly',
       priority: 0.7,
@@ -33,11 +28,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/lyrics`,
       changeFrequency: 'weekly',
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/about`,
-      changeFrequency: 'monthly',
-      priority: 0.6,
     },
   ];
 

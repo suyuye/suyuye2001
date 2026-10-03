@@ -88,7 +88,7 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <div className="flex min-h-screen flex-col">
+          <div className="flex min-h-dvh flex-col">
             <Header searchEntries={buildSearchIndex()} />
             <main className="flex-1">{children}</main>
             <Footer />

@@ -79,7 +79,26 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* 移动端用 dvh（动态视口高度），不用 vh。
+   * vh 在移动端是「地址栏完全收起时」的高度，实际可见区域更矮，
+   * 用vh 撑出的空白会露在内容下方，看着像页面缺了一块。*/
   min-height: 100vh;
+  min-height: 100dvh;
+  /* 移动端横向溢出会露出 html 底色，这里兜底禁止横向滚动 */
+  overflow-x: hidden;
+}
+
+/*
+ * html 也要吃主题色。
+ * 只给 body 设背景时，一旦body 高度不足（内容短）或出现横向溢出，
+ * 露出的就是 html 的浏览器默认白色 —— 深色模式下会看到刺眼白条。
+ */
+html {
+  background: var(--bg);
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
 }
 
 ::selection {
@@ -321,6 +340,55 @@ body {
   animation: gradient 12s ease infinite;
 }
 
+/* =====
+ * 首屏入场动画（纯 CSS，不依赖 JS）
+ *
+ * 为什么不用 framer-motion 的 initial/animate：
+ * framer-motion 在 SSR 时会把 initial 的 opacity:0 直接写进 HTML 的
+ * style 属性，等客户端 JS 加载完才推进动画。移动端弱网下 chunk 加载
+ * 慢甚至失败时，这个 opacity:0 会永久留在页面上 —— 首屏表现为「一整片
+ * 空白/纯黑」，PC 上几乎复现不了，因为 JS 已经躺在缓存里。
+ *
+ * CSS 动画随 HTML/CSSOM 一起下发，浏览器解析到就开始播，不等 JS。
+ * 同时 @media (prefers-reduced-motion) 的 0.01ms 兜底也能让它直达终态。
+ * =====
+ */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes spin-in {
+  from { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+  to   { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+
+/* both = 动画前后都应用关键帧，首帧不会闪一下再消失 */
+@utility animate-rise-in {
+  animation: rise-in 0.6s ease-out both;
+}
+@utility animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+@utility animate-pop-in {
+  animation: pop-in 0.6s ease-out both;
+}
+/* 主题图标切换：key 变化会重新挂载 span，CSS 动画自动重播 */
+@utility animate-spin-in {
+  animation: spin-in 0.3s ease-in-out both;
+}
+/* 依次延迟，模拟原来 motion 的 delay 阶梯 */
+@utility animate-delay-1 { animation-delay: 0.2s; }
+@utility animate-delay-2 { animation-delay: 0.5s; }
+@utility animate-delay-3 { animation-delay: 0.7s; }
+
 /* ===== 尊重系统「减少动态效果」 ===== */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -328,7 +396,9 @@ body {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
 }

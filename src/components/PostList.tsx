@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { useState } from 'react';
 import type { BlogPost } from '@/lib/mdx';
 
@@ -29,11 +28,11 @@ function PostCard({
   const [imgError, setImgError] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.4) }}
+    // 入场动画走 CSS 而非 framer-motion：motion 的 initial opacity:0 会被 SSR
+    // 写进 HTML，移动端弱网下 JS 未就绪时内容会永久隐形。
+    <div
+      className="animate-rise-in"
+      style={{ animationDelay: `${Math.min(index * 0.08, 0.4)}s` }}
     >
       <Link href={`/posts/${post.slug}`} className="group block">
         <article className="card overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-primary/10 hover:-translate-y-1">
@@ -102,7 +101,7 @@ function PostCard({
           </div>
         </article>
       </Link>
-    </motion.div>
+    </div>
   );
 }
 

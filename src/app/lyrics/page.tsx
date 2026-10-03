@@ -33,8 +33,11 @@ export default function LyricsPage() {
              ══════════════════════════════════════ */
           <motion.div
             key="album-grid"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="animate-rise-in"
+            // initial={false}：不让 SSR 输出 opacity:0。
+            // 否则移动端弱网 / JS 未就绪时整个专辑网格会永久隐形。
+            // 入场观感交给上面的 CSS 动画，切换时的退场动画仍由 framer-motion 负责。
+            initial={false}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
@@ -77,8 +80,8 @@ export default function LyricsPage() {
              ══════════════════════════════════════ */
           <motion.div
             key={`album-${selectedAlbum.id}`}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="animate-rise-in"
+            initial={false}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
@@ -168,8 +171,8 @@ export default function LyricsPage() {
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={activeId}
-                          initial={{ opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
+                          className="animate-rise-in"
+                          initial={false}
                           exit={{ opacity: 0, y: -8 }}
                           transition={{ duration: 0.3, ease: 'easeOut' }}
                         >

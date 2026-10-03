@@ -15,8 +15,6 @@ const navLinks = [
   { href: '/album', label: '相册' },
   { href: '/music', label: '音乐' },
   { href: '/lyrics', label: '笔下' },
-  { href: '/about', label: '关于我' },
-  { href: '/lab', label: '实验室' },
 ];
 
 export function Header({ searchEntries = [] }: { searchEntries?: SearchEntry[] }) {

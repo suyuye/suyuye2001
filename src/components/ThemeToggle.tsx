@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useTheme } from './ThemeProvider';
 
 export function ThemeToggle() {
@@ -9,19 +8,18 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="relative flex h-8 w-8 items-center justify-center rounded-full text-text-secondary hover:bg-primary-bg hover:text-primary transition-colors"
+      className="relative flex h-8 w-8 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-primary-bg hover:text-primary"
       aria-label="切换主题"
     >
-      <motion.span
-        key={theme}
-        initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-        animate={{ rotate: 0, opacity: 1, scale: 1 }}
-        exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="text-lg leading-none"
-      >
+      {/*
+        图标切换动画走 CSS 而非 framer-motion：
+        motion 的 initial opacity:0 会被 SSR 写进 HTML，
+        移动端弱网下 JS 未就绪时按钮会是一个空圈。
+        key={theme} 会让 React 重建 span，CSS 动画随之重播。
+      */}
+      <span key={theme} className="animate-spin-in text-lg leading-none">
         {theme === 'light' ? '🌙' : '☀️'}
-      </motion.span>
+      </span>
     </button>
   );
 }

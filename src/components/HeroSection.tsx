@@ -16,7 +16,7 @@ export function HeroSection() {
 
   return (
     <section className="relative flex min-h-[55vh] items-center justify-center overflow-hidden pt-20 sm:pt-28">
-      {/* Slow-moving blurry blobs */}
+      {/* Slow-moving blurry blobs —— 纯装饰，丢帧无所谓，保留 framer-motion 即可 */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {blobs.map((blob, i) => (
           <motion.div
@@ -33,15 +33,19 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Content */}
+      {/*
+        Content
+
+        入场动画全部走 CSS（animate-pop-in / rise-in / fade-in）而不是 framer-motion：
+        motion 的 initial={{ opacity: 0 }} 会被 SSR 直接写进 HTML 的 style 属性，
+        等客户端 JS 加载完才推进。移动端弱网下 chunk 加载慢或失败时，
+        这个 opacity:0 会永久留在页面上 —— 首屏表现为「一整片空白 / 纯黑」，
+        而 PC 因为 JS 已在缓存里几乎复现不了。
+        CSS 动画随 HTML/CSSOM 一起下发，浏览器解析到就播，不等 JS。
+      */}
       <div className="relative z-10 flex flex-col items-center px-4 text-center">
         {/* Avatar — 只保留一层呼吸光晕，之前 animate-pulse 与 breathing 两条动画叠加会互相打架 */}
-        <motion.div
-          className="relative mb-8"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-        >
+        <div className="relative mb-8 animate-pop-in">
           <div className="relative h-28 w-28 sm:h-32 sm:w-32">
             {/* Glow ring */}
             <div
@@ -63,15 +67,10 @@ export function HeroSection() {
               50% { transform: scale(1.12); opacity: 0.25; }
             }
           `}</style>
-        </motion.div>
+        </div>
 
         {/* Blog title */}
-        <motion.h1
-          className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+        <h1 className="animate-rise-in animate-delay-1 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
           <span
             className={`bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto] ${
               reduceMotion ? '' : 'animate-gradient-slow'
@@ -79,15 +78,10 @@ export function HeroSection() {
           >
             可我不是苏羽野
           </span>
-        </motion.h1>
+        </h1>
 
         {/* Typewriter tagline */}
-        <motion.div
-          className="mt-6 h-8 text-lg sm:text-xl text-text-secondary"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
+        <div className="mt-6 h-8 animate-fade-in animate-delay-2 text-lg text-text-secondary sm:text-xl">
           <TypeWriter
             strings={[
               '站在暴雨里，我比它更磅礴。',
@@ -99,15 +93,10 @@ export function HeroSection() {
             deleteSpeed={40}
             pauseDuration={2000}
           />
-        </motion.div>
+        </div>
 
-        {/* CTA buttons */}
-        <motion.div
-          className="mt-10 flex items-center justify-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-        >
+        {/* CTA buttons —— 原「关于我」页已移除，第二入口改指相册 */}
+        <div className="mt-10 flex animate-rise-in animate-delay-3 items-center justify-center gap-4">
           <a
             href="/blog"
             className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-7 text-sm font-medium text-white shadow-lg shadow-primary/25 transition-all hover:brightness-110 hover:shadow-xl hover:shadow-primary/30 active:scale-[0.97]"
@@ -115,20 +104,20 @@ export function HeroSection() {
             浏览博客
           </a>
           <a
-            href="/about"
+            href="/album"
             className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-bg-card px-7 text-sm font-medium text-text-secondary shadow-sm transition-all hover:text-text-primary hover:shadow-md active:scale-[0.97]"
           >
-            关于我
+            看看相册
           </a>
-        </motion.div>
+        </div>
       </div>
 
       {/* Wave divider — sits above blobs, below content */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px] z-0 pointer-events-none">
+      <div className="absolute bottom-0 left-0 z-0 w-full translate-y-[1px] overflow-hidden leading-none pointer-events-none">
         <svg
           viewBox="0 0 1440 100"
           preserveAspectRatio="none"
-          className="block w-full h-10 md:h-16 lg:h-20"
+          className="block h-10 w-full md:h-16 lg:h-20"
         >
           <path
             d="M0,50 C320,100 420,0 740,50 C1060,100 1120,0 1440,50 L1440,100 L0,100 Z"

@@ -1,16 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import type { BlogPost } from '@/lib/mdx';
 
 export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.08 }}
-    >
+    // CSS 入场动画，不依赖 JS（motion 的 initial opacity:0 在弱网下会永久隐形）
+    <div className="animate-rise-in" style={{ animationDelay: `${index * 0.08}s` }}>
       <Link href={`/posts/${post.slug}`} className="block card-hover p-6">
         <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
           <time className="whitespace-nowrap">{post.date}</time>
@@ -44,6 +40,6 @@ export function BlogCard({ post, index }: { post: BlogPost; index: number }) {
           </span>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }
