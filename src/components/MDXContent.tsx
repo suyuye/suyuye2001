@@ -1,6 +1,6 @@
 'use client';
 
-import React, { isValidElement } from 'react';
+import React, { isValidElement, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
@@ -44,16 +44,36 @@ function stripInternalProps(props: object): MarkdownProps {
 /**
  * 图片组件。真正的 <figure> 包装在 p 里完成（见下方 p 的实现），
  * 因为 Markdown 的图片始终被包在段落中，单独 override img 无法拿到块级容器。
+ *
+ * lazy 加载期间浏览器拿不到固有尺寸，容器会塌成一条并露出 alt 文本，
+ * 看起来像「图片加载失败」。这里显式声明 aspect-ratio 占位，
+ * 加载完成后再由 onLoad 撤掉骨架。
  */
 function MarkdownImage({ src, alt }: React.ComponentPropsWithoutRef<'img'>) {
+  const [loaded, setLoaded] = useState(false);
+
   if (!src || typeof src !== 'string') return null;
 
   return (
-    <div className="group/md-img relative overflow-hidden rounded-xl border border-border">
+    <div className="group/md-img relative overflow-hidden rounded-xl border border-border bg-bg-card">
+      {/* 骨架：占住高度，避免 lazy 期间塌陷 */}
+      {!loaded && (
+        <div className="flex w-full items-center justify-center bg-primary-bg/40">
+          <div className="relative aspect-[16/10] w-full">
+            <span className="absolute inset-0 flex items-center justify-center text-xs text-text-tertiary">
+              图片加载中…
+            </span>
+          </div>
+        </div>
+      )}
+
       <img
         src={src}
         alt={alt || ''}
-        className="w-full transition-transform duration-300 group-hover/md-img:scale-[1.015]"
+        onLoad={() => setLoaded(true)}
+        className={`w-full transition-transform duration-300 group-hover/md-img:scale-[1.015] ${
+          loaded ? '' : 'absolute inset-0 h-full opacity-0'
+        }`}
         loading="lazy"
         decoding="async"
       />
@@ -91,6 +111,9 @@ function isEmElement(node: React.ReactNode): node is React.ReactElement {
   return type?.name === 'em';
 }
 
+/** 图片文件扩展名，用于识别「链接包图片」的两种写法 */
+const IMAGE_EXT = /\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i;
+
 /** 段落内容是否为纯图片，是则返回该图片元素以提升为 <figure> */
 function extractImage(children: React.ReactNode): React.ReactElement | null {
   const nodes = React.Children.toArray(children).filter((n) => {
@@ -106,10 +129,30 @@ function extractImage(children: React.ReactNode): React.ReactElement | null {
   // 情况一：裸图片 ![alt](src)
   if (isMarkdownImage(first)) return first;
 
-  // 情况二：图片被链接包裹 [![](src)](href) —— 冗余链接，取出内层图片
   if (isValidElement(first) && first.type === 'a') {
-    const inner = (first.props as { children?: React.ReactNode }).children;
-    if (isMarkdownImage(inner)) return inner;
+    const aProps = first.props as { href?: string; children?: React.ReactNode };
+
+    // 情况二：图片被链接包裹 [![](src)](href) —— 冗余链接，取出内层图片
+    if (isMarkdownImage(aProps.children)) return aProps.children as React.ReactElement;
+
+    /*
+     * 情况三：漏写了感叹号 —— [文件名.png](图片URL)
+     * 这是纯文本链接，渲染出来是一条蓝色文件名，点击才能看到图。
+     * 只要链接文本是图片文件名、href 也指向图片，就还原成图片。
+     */
+    const text = String(aProps.children ?? '').trim();
+    const href = aProps.href ?? '';
+    if (IMAGE_EXT.test(href) && IMAGE_EXT.test(text)) {
+      return (
+        <img
+          key="recovered-image"
+          src={href}
+          alt={text.replace(IMAGE_EXT, '')}
+          loading="lazy"
+          decoding="async"
+        />
+      );
+    }
   }
 
   return null;
