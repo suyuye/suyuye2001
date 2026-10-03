@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://suyuye-blog.vercel.app/sitemap.xml',
+    sitemap: 'https://suyuye-boke.netlify.app/sitemap.xml',
   };
 }
