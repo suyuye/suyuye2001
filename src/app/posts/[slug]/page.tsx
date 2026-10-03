@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getAllPosts, getPostBySlug } from '@/lib/mdx';
 import { MDXContent } from '@/components/MDXContent';
 import { Comments } from '@/components/Comments';
+import { ReadingProgress } from '@/components/ReadingProgress';
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -26,17 +27,17 @@ export async function generateMetadata({
   };
 }
 
-const gradientOverlays = [
-  'from-blue-600/80 via-blue-500/60 to-transparent',
-  'from-purple-600/80 via-pink-500/60 to-transparent',
-  'from-emerald-600/80 via-teal-500/60 to-transparent',
-  'from-orange-600/80 via-rose-500/60 to-transparent',
-  'from-indigo-600/80 via-violet-500/60 to-transparent',
-];
+/** 统计中文字符 + 英文单词，估算阅读时长（中文按 400 字/分） */
+function getReadingStats(content: string) {
+  const plain = content
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '');
 
-function getCoverGradient(slug: string) {
-  const hash = slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  return gradientOverlays[hash % gradientOverlays.length];
+  const cjk = (plain.match(/[\u4e00-\u9fa5]/g) || []).length;
+  const words = (plain.match(/[a-zA-Z]+/g) || []).length;
+  const minutes = Math.max(1, Math.round(cjk / 400 + words / 200));
+
+  return { minutes, chars: cjk + words };
 }
 
 export default async function PostPage({
@@ -48,59 +49,69 @@ export default async function PostPage({
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
+  const { minutes, chars } = getReadingStats(post.content);
+
   return (
     <>
-      {/* ── Full-width hero with cover ── */}
-      <section className="relative flex h-[40vh] min-h-[320px] items-end overflow-hidden sm:h-[50vh]">
-        {/* Cover image or gradient fallback */}
-        {post.cover ? (
-          <img
-            src={post.cover}
-            alt={post.title}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        ) : (
-          <div
-            className={`absolute inset-0 bg-gradient-to-br ${getCoverGradient(post.slug)}`}
-          />
-        )}
+      <ReadingProgress targetId="post-body" />
 
-        {/* Gradient overlay for readability */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent`}
-        />
-
-        {/* Title area */}
-        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col gap-3 px-4 pb-10 sm:pb-14">
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-white/20 px-3 py-1 text-white/90 backdrop-blur-sm font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-            <span className="text-white/50">·</span>
-            <time className="text-white/70">{post.date}</time>
-          </div>
-
-          <h1 className="text-2xl font-bold text-white sm:text-4xl md:text-5xl leading-tight">
-            {post.title}
-          </h1>
-
-          <p className="max-w-xl text-sm text-white/70 sm:text-base line-clamp-2">
-            {post.description}
-          </p>
+      {/* ── Header: title block on solid bg, cover image below ── */}
+      <header className="mx-auto max-w-3xl px-4 pt-28 sm:pt-36">
+        {/* Tags */}
+        <div className="flex flex-wrap items-center gap-2">
+          {post.tags.map((tag) => (
+            <Link
+              key={tag}
+              href="/blog"
+              className="rounded-full bg-primary-bg px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/15"
+            >
+              {tag}
+            </Link>
+          ))}
         </div>
-      </section>
 
-      {/* ── Article body ── */}
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+        {/* Title */}
+        <h1 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-text-primary sm:text-4xl">
+          {post.title}
+        </h1>
+
+        {/* Description */}
+        <p className="mt-4 text-base leading-relaxed text-text-secondary">
+          {post.description}
+        </p>
+
+        {/* Meta */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-tertiary">
+          <time className="whitespace-nowrap">{post.date}</time>
+          <span aria-hidden="true">·</span>
+          <span className="whitespace-nowrap">约 {minutes} 分钟读完</span>
+          <span aria-hidden="true">·</span>
+          <span className="whitespace-nowrap">约 {chars} 字</span>
+        </div>
+
+        {/* Divider */}
+        <div className="mt-8 h-px w-full bg-border" />
+      </header>
+
+      {/* ── Cover: no text overlay, original colors preserved ── */}
+      {post.cover && (
+        <figure className="mx-auto mt-8 max-w-4xl px-4">
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <img
+              src={post.cover}
+              alt={post.title}
+              className="h-auto w-full object-cover sm:h-[300px] sm:object-cover"
+            />
+          </div>
+        </figure>
+      )}
+
+      {/* ── Article body: bare layout, no card ── */}
+      <div className="mx-auto max-w-2xl px-4 pb-10 pt-12 sm:pt-16">
         {/* Back link */}
         <Link
           href="/blog"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary transition-colors"
+          className="mb-10 inline-flex items-center gap-1.5 text-sm text-text-tertiary transition-colors hover:text-primary"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -108,15 +119,15 @@ export default async function PostPage({
           返回博客
         </Link>
 
-        <article className="card p-6 sm:p-10">
+        <div id="post-body">
           <MDXContent content={post.content} />
-        </article>
+        </div>
 
         {/* Footer nav */}
-        <div className="mt-10 flex items-center justify-between border-t border-border pt-6">
+        <div className="mt-16 flex items-center justify-between border-t border-border pt-6">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-text-secondary transition-colors hover:text-primary"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import type { BlogPost } from '@/lib/mdx';
 
 /** Generate a deterministic gradient from a string */
-function gradientFromSlug(slug: string, index: number) {
+function gradientFromSlug(slug: string) {
   const gradients = [
     'from-blue-500 to-cyan-400',
     'from-purple-600 to-pink-400',
@@ -26,7 +26,6 @@ function PostCard({
   post: BlogPost;
   index: number;
 }) {
-  const isOdd = index % 2 === 0; // even index → image on left
   const [imgError, setImgError] = useState(false);
 
   return (
@@ -38,9 +37,8 @@ function PostCard({
     >
       <Link href={`/posts/${post.slug}`} className="group block">
         <article className="card overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-primary/10 hover:-translate-y-1">
-          <div
-            className={`flex flex-col ${isOdd ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
-          >
+          {/* 统一「图在左」单方向布局：交错排布会让视线反复跨越中线，读起来跳 */}
+          <div className="flex flex-col sm:flex-row">
             {/* Cover image */}
             <div className="relative sm:w-[38%] shrink-0 overflow-hidden">
               {post.cover && !imgError ? (
@@ -53,12 +51,12 @@ function PostCard({
                   />
                   {/* Bottom fade — mobile */}
                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-bg-card via-bg-card/30 to-transparent pointer-events-none sm:hidden" />
-                  {/* Right fade — desktop */}
+                  {/* Right fade — desktop：让图与正文之间的硬边化开 */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-card pointer-events-none hidden sm:block" />
                 </>
               ) : (
                 <div
-                  className={`h-52 w-full bg-gradient-to-br ${gradientFromSlug(post.slug, index)} sm:h-full flex items-center justify-center`}
+                  className={`h-52 w-full bg-gradient-to-br ${gradientFromSlug(post.slug)} sm:h-full flex items-center justify-center`}
                 >
                   <span className="text-4xl font-bold text-white/40">
                     {post.title.charAt(0)}

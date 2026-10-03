@@ -4,6 +4,11 @@ import matter from 'gray-matter';
 
 const novelsDir = path.join(process.cwd(), 'src', 'content', 'novels');
 
+/** 统一换行符为 LF，详见 lib/mdx.ts 中的说明 */
+function normalize(raw: string): string {
+  return raw.replace(/\r\n?/g, '\n');
+}
+
 export interface NovelChapter {
   slug: string;
   title: string;
@@ -39,7 +44,7 @@ export function getAllNovels(): Novel[] {
 
     const chapters = files
       .map((f) => {
-        const raw = fs.readFileSync(path.join(chapterDir, f), 'utf-8');
+        const raw = normalize(fs.readFileSync(path.join(chapterDir, f), 'utf-8'));
         const { data } = matter(raw);
         return {
           slug: f.replace(/\.mdx?$/, ''),
@@ -74,7 +79,7 @@ export function getChapter(
   const found = [filePath, mdPath].find(fs.existsSync);
   if (!found) return null;
 
-  const raw = fs.readFileSync(found, 'utf-8');
+  const raw = normalize(fs.readFileSync(found, 'utf-8'));
   const { data, content } = matter(raw);
 
   return {

@@ -180,7 +180,7 @@ export default function LyricsPage() {
 
                           {/* Lyrics text */}
                           {activeTrack.lyrics ? (
-                            <div className="whitespace-pre-wrap leading-loose text-lg text-gray-800 dark:text-gray-300 font-serif tracking-wide">
+                            <div className="whitespace-pre-wrap font-serif text-lg leading-loose tracking-wide text-text-primary">
                               {activeTrack.lyrics}
                             </div>
                           ) : (

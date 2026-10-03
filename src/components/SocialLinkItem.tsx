@@ -22,10 +22,8 @@ function QRImage({ src, alt, className }: { src: string; alt: string; className?
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 ${className}`}>
-        <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
-          加载失败
-        </span>
+      <div className={`flex items-center justify-center rounded-xl bg-bg text-text-tertiary ${className ?? ''}`}>
+        <span className="whitespace-nowrap text-xs">加载失败</span>
       </div>
     );
   }
@@ -106,18 +104,18 @@ export function SocialLinkItem({ link }: SocialLinkItemProps) {
             >
               <div className="flex flex-col items-center">
                 {/* Card body — fixed width prevents collapse */}
-                <div className="w-[160px] flex flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl p-3 shadow-xl shadow-black/10 dark:bg-gray-800/80 dark:border-white/10">
+                <div className="flex w-[160px] flex-col items-center justify-center rounded-2xl border border-border bg-bg-card/90 p-3 shadow-xl backdrop-blur-xl">
                   <QRImage
                     src={qrSrc}
                     alt={`${link.label} 二维码`}
-                    className="w-full h-auto block rounded-xl"
+                    className="block h-auto w-full rounded-xl"
                   />
-                  <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                  <p className="mt-2 whitespace-nowrap text-center text-xs text-text-secondary">
                     扫码加{link.label}
                   </p>
                 </div>
                 {/* Arrow */}
-                <div className="h-0 w-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-white/70 dark:border-t-gray-800/80" />
+                <div className="h-0 w-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-border" />
               </div>
             </motion.div>
           )}
@@ -148,13 +146,13 @@ export function SocialLinkItem({ link }: SocialLinkItemProps) {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <div className="w-[220px] flex flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/90 backdrop-blur-xl p-4 shadow-2xl dark:bg-gray-900/90 dark:border-white/10">
+              <div className="flex w-[220px] flex-col items-center justify-center rounded-2xl border border-border bg-bg-card p-4 shadow-2xl">
                 <QRImage
                   src={qrSrc}
                   alt={`${link.label} 二维码`}
-                  className="w-full h-auto block rounded-xl"
+                  className="block h-auto w-full rounded-xl"
                 />
-                <p className="mt-3 text-center text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                <p className="mt-3 whitespace-nowrap text-center text-sm text-text-secondary">
                   扫码加{link.label}
                 </p>
               </div>

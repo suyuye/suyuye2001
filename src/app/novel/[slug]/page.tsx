@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getAllChapters, getChapter } from '@/lib/novel';
 import { ChapterContent } from '@/components/ChapterContent';
+import { ReadingProgress } from '@/components/ReadingProgress';
 
 export async function generateStaticParams() {
   const chapters = getAllChapters();
@@ -37,10 +38,13 @@ export default async function ChapterPage({
   if (!chapter) notFound();
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-24 pb-20 sm:pt-32">
+    <>
+      <ReadingProgress targetId="chapter-body" />
+
+      <div className="mx-auto max-w-2xl px-4 pt-28 pb-20 sm:pt-36">
       <Link
         href="/novel"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary transition-colors"
+        className="mb-10 inline-flex items-center gap-1.5 text-sm text-text-tertiary transition-colors hover:text-primary"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -48,28 +52,30 @@ export default async function ChapterPage({
         返回目录
       </Link>
 
-      <article className="card p-6 sm:p-10">
+      <article>
         <header className="mb-8 text-center">
-          <span className="text-xs font-medium text-primary">
+          <span className="text-xs font-medium tracking-wide text-primary">
             {chapter.novel}
           </span>
-          <h1 className="mt-2 text-2xl font-bold text-text-primary sm:text-3xl">
+          <h1 className="mt-3 text-2xl font-bold text-text-primary sm:text-3xl">
             {chapter.title}
           </h1>
         </header>
 
-        <div className="mb-8 flex items-center gap-3 text-text-tertiary/40">
+        <div className="mb-10 flex items-center gap-3 text-text-tertiary/40">
           <div className="h-px flex-1 bg-border" />
           <span className="text-xs">✦</span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        <ChapterContent content={chapter.content} />
+        <div id="chapter-body">
+          <ChapterContent content={chapter.content} />
+        </div>
 
-        <div className="mt-12 flex items-center justify-between border-t border-border pt-6">
+        <div className="mt-16 flex items-center justify-between border-t border-border pt-6">
           <Link
             href="/novel"
-            className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-text-secondary transition-colors hover:text-primary"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -78,6 +84,7 @@ export default async function ChapterPage({
           </Link>
         </div>
       </article>
-    </div>
+      </div>
+    </>
   );
 }

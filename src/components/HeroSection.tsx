@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { TypeWriter } from './TypeWriter';
 import { Avatar } from './Avatar';
 
@@ -11,6 +11,9 @@ const blobs = [
 ];
 
 export function HeroSection() {
+  // 系统开启「减少动态效果」时，所有循环动画退化为静态
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="relative flex min-h-[55vh] items-center justify-center overflow-hidden pt-20 sm:pt-28">
       {/* Slow-moving blurry blobs */}
@@ -19,7 +22,7 @@ export function HeroSection() {
           <motion.div
             key={i}
             className={`absolute ${blob.size} ${blob.left} ${blob.top} ${blob.color} rounded-full opacity-10 blur-3xl`}
-            animate={{ x: blob.x, y: blob.y }}
+            animate={reduceMotion ? undefined : { x: blob.x, y: blob.y }}
             transition={{
               duration: blob.duration,
               repeat: Infinity,
@@ -32,7 +35,7 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center px-4 text-center">
-        {/* Avatar with breathing glow */}
+        {/* Avatar — 只保留一层呼吸光晕，之前 animate-pulse 与 breathing 两条动画叠加会互相打架 */}
         <motion.div
           className="relative mb-8"
           initial={{ scale: 0, opacity: 0 }}
@@ -41,12 +44,13 @@ export function HeroSection() {
         >
           <div className="relative h-28 w-28 sm:h-32 sm:w-32">
             {/* Glow ring */}
-            <div className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
             <div
-              className="absolute inset-2 rounded-full bg-primary/10"
-              style={{
-                animation: 'breathing 3s ease-in-out infinite',
-              }}
+              className="absolute inset-1 rounded-full bg-primary/15"
+              style={
+                reduceMotion
+                  ? undefined
+                  : { animation: 'breathing 6s ease-in-out infinite' }
+              }
             />
             {/* Avatar image */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -55,8 +59,8 @@ export function HeroSection() {
           </div>
           <style jsx>{`
             @keyframes breathing {
-              0%, 100% { transform: scale(1); opacity: 0.6; }
-              50% { transform: scale(1.25); opacity: 0.3; }
+              0%, 100% { transform: scale(1); opacity: 0.55; }
+              50% { transform: scale(1.12); opacity: 0.25; }
             }
           `}</style>
         </motion.div>
@@ -68,7 +72,11 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+          <span
+            className={`bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto] ${
+              reduceMotion ? '' : 'animate-gradient-slow'
+            }`}
+          >
             可我不是苏羽野
           </span>
         </motion.h1>

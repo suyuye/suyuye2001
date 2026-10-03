@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
+import { SearchDialog } from './SearchDialog';
+import type { SearchEntry } from '@/lib/search';
 
 const navLinks = [
   { href: '/', label: '首页' },
@@ -17,9 +19,10 @@ const navLinks = [
   { href: '/lab', label: '实验室' },
 ];
 
-export function Header() {
+export function Header({ searchEntries = [] }: { searchEntries?: SearchEntry[] }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // Close menu on route change
   useEffect(() => {
@@ -32,8 +35,35 @@ export function Header() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  // ⌘K / Ctrl+K 打开搜索，/ 也可以（不在输入态时）
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const typing =
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+        return;
+      }
+      if (e.key === '/' && !typing && !searchOpen) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [searchOpen]);
+
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
+
   return (
-    <header className="fixed top-0 inset-x-0 z-50 flex justify-center">
+    <>
+      <header className="fixed top-0 inset-x-0 z-50 flex justify-center">
       <nav className="glass relative mt-3 flex h-13 w-[calc(100%-2rem)] max-w-5xl items-center rounded-2xl px-5 shadow-md">
         {/* Logo */}
         <Link href="/" className="mr-8 shrink-0">
@@ -79,6 +109,20 @@ export function Header() {
         {/* Spacer */}
         <div className="flex-1" />
 
+        {/* Search trigger */}
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="mr-1 flex h-8 items-center gap-1.5 rounded-lg px-2 text-text-secondary transition-colors hover:bg-primary-bg hover:text-primary"
+          aria-label="打开搜索"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+          </svg>
+          <kbd className="hidden text-[10px] leading-none text-text-tertiary lg:block">
+            ⌘K
+          </kbd>
+        </button>
+
         {/* Theme toggle */}
         <ThemeToggle />
 
@@ -108,6 +152,26 @@ export function Header() {
               transition={{ duration: 0.2, ease: 'easeOut' }}
             >
               <div className="glass rounded-2xl px-2 py-2 shadow-xl">
+                {/* Search entry for mobile */}
+                <motion.div
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0 }}
+                >
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setSearchOpen(true);
+                    }}
+                    className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-primary-bg hover:text-primary"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                    </svg>
+                    搜索
+                  </button>
+                </motion.div>
+
                 {navLinks.map((link, i) => {
                   const isActive =
                     link.href === '/'
@@ -155,5 +219,12 @@ export function Header() {
         )}
       </AnimatePresence>
     </header>
+
+      <SearchDialog
+        entries={searchEntries}
+        open={searchOpen}
+        onClose={closeSearch}
+      />
+    </>
   );
 }

@@ -19,6 +19,7 @@
   --primary: #425aef;
   --primary-light: #6d81f5;
   --primary-bg: rgba(66, 90, 239, 0.08);
+  --danger: #dc2626;
 
   /* Borders & Shadows */
   --border: rgba(0, 0, 0, 0.06);
@@ -26,8 +27,8 @@
   --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
 
-  /* Nav */
-  --nav-height: 60px;
+  /* Nav：mt-3 (12px) + h-13 (52px) = 64px，取 nav 底边位置 */
+  --nav-height: 64px;
 }
 
 .dark {
@@ -44,6 +45,7 @@
   --primary: #6d81f5;
   --primary-light: #8a9af7;
   --primary-bg: rgba(109, 129, 245, 0.12);
+  --danger: #f87171;
 
   --border: rgba(255, 255, 255, 0.06);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -58,6 +60,7 @@
   --color-primary: var(--primary);
   --color-primary-light: var(--primary-light);
   --color-primary-bg: var(--primary-bg);
+  --color-danger: var(--danger);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
@@ -143,7 +146,7 @@ body {
   color: var(--text-primary);
 
   h1, h2, h3, h4 {
-    scroll-margin-top: calc(var(--nav-height) + 16px);
+    scroll-margin-top: calc(var(--nav-height) + 24px);
     font-weight: 700;
     line-height: 1.4;
     margin-top: 2em;
@@ -198,6 +201,74 @@ body {
     background: none;
     padding: 0;
     border-radius: 0;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  /* ===== 任务列表（GFM checkbox）===== */
+  li:has(> input[type="checkbox"]) {
+    list-style: none;
+    padding-left: 0.25rem;
+  }
+  li > input[type="checkbox"] {
+    vertical-align: middle;
+  }
+  li:has(> input[type="checkbox"]:checked) {
+    color: var(--text-tertiary);
+    text-decoration: line-through;
+  }
+}
+
+/* ===== 二级标题：左侧主色短杠 ===== */
+@utility prose-h2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 2.75em;
+  margin-bottom: 1em;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text-primary);
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 1.1em;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: var(--primary);
+  }
+}
+
+/* ===== 图片图注：紧贴图片的次要说明 ===== */
+@utility prose-caption {
+  margin-top: -1.5rem;
+  margin-bottom: 2.25rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--text-tertiary);
+  font-style: normal;
+}
+
+/* ===== 引用块：左侧竖线 + 更克制的斜体 ===== */
+@utility prose-quote {
+  margin: 1.75em 0;
+  padding: 0.875rem 1.25rem;
+  border-left: 3px solid var(--primary);
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: var(--primary-bg);
+  color: var(--text-secondary);
+
+  p {
+    margin-bottom: 0.5em;
+  }
+  p:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -245,6 +316,19 @@ body {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-@utility animate-gradient {
-  animation: gradient 4s ease infinite;
+/* 4s 一轮太快，视线会被拽走；12s 一轮基本只剩“颜色在流动”的潜意识 */
+@utility animate-gradient-slow {
+  animation: gradient 12s ease infinite;
+}
+
+/* ===== 尊重系统「减少动态效果」 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

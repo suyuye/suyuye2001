@@ -22,7 +22,7 @@ export default function LabPage() {
         {projects.map((project) => (
           <div
             key={project.id}
-            className="group card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 dark:bg-white/5 dark:border-white/10 dark:hover:border-primary/30 dark:hover:shadow-primary/10"
+            className="card-hover p-6"
           >
             {/* Icon */}
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
@@ -44,7 +44,7 @@ export default function LabPage() {
               {project.techStack.map((tech) => (
                 <span
                   key={tech}
-                  className="text-xs px-2 py-1 rounded-md bg-gray-100 text-text-secondary dark:bg-gray-800 dark:text-gray-400"
+                  className="rounded-md bg-primary-bg px-2 py-1 text-xs text-text-secondary"
                 >
                   {tech}
                 </span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { userConfig } from '@/config/userConfig';
 
 const poeticBio =
@@ -10,6 +10,7 @@ const poeticBio =
 
 export function AboutHero() {
   const { name, location, age, major, interests } = userConfig;
+  const reduceMotion = useReducedMotion();
 
   return (
     <section className="relative flex min-h-[55vh] items-center justify-center overflow-hidden sm:min-h-[60vh]">
@@ -41,7 +42,11 @@ export function AboutHero() {
 
           {/* Name */}
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            <span className="bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+            <span
+              className={`bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent bg-[length:200%_auto] ${
+                reduceMotion ? '' : 'animate-gradient-slow'
+              }`}
+            >
               {name}
             </span>
           </h1>

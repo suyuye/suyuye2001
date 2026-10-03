@@ -54,7 +54,7 @@ export function AlbumGate({ photos }: { photos: AlbumPhoto[] }) {
             />
 
             {error && (
-              <p className="text-xs text-red-500">密码错误，请重试</p>
+              <p className="text-xs text-danger">密码错误，请重试</p>
             )}
 
             <button
