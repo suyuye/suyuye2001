@@ -9,6 +9,8 @@ export interface BlogPost {
   title: string;
   description: string;
   date: string;
+  /** 原始 date 字段（YYYY-MM-DD），RSS 的 pubDate 需要它 */
+  rawDate: string;
   tags: string[];
   cover?: string;
 }
@@ -45,11 +47,12 @@ export function getAllPosts(): BlogPost[] {
         title: data.title || slug,
         description: data.description || '',
         date: data.date ? formatDate(data.date) : '',
+        rawDate: data.date ? String(data.date) : '',
         tags: data.tags || [],
         cover: data.cover || undefined,
       };
     })
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime());
 
   return posts;
 }
@@ -69,6 +72,7 @@ export function getPostBySlug(slug: string): BlogPostWithContent | null {
     title: data.title || slug,
     description: data.description || '',
     date: data.date ? formatDate(data.date) : '',
+    rawDate: data.date ? String(data.date) : '',
     tags: data.tags || [],
     cover: data.cover || undefined,
     content,

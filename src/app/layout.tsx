@@ -86,6 +86,20 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        {/*
+          RSS 发现链接。
+          不用 metadata.alternates.types 是因为 metadata 是浅合并 —— 各页面自己的
+          alternates（canonical）会把 layout 的整个 alternates 覆盖掉，导致这个 link
+          偶发缺失。直接渲染在 head 里，全站每页都稳定生效。
+        */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="苏羽野2026-2027"
+          href="https://suyuye-boke.netlify.app/feed.xml"
+        />
+      </head>
       <body>
         <ThemeProvider>
           <div className="flex min-h-dvh flex-col">

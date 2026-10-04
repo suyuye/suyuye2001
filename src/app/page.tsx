@@ -1,9 +1,18 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/mdx';
 import { getAllNovels } from '@/lib/novel';
 import { HeroSection } from '@/components/HeroSection';
 import { PostList } from '@/components/PostList';
 import { Sidebar } from '@/components/Sidebar';
+
+// 首页此前继承 layout 的默认 metadata，分享出去标题是全站通用的那一句。
+export const metadata: Metadata = {
+  title: '首页',
+  description:
+    '苏羽野的数字花园 — 记录技术探索、独立开发、说唱音乐创作，以及生活中的光影碎片。',
+  alternates: { canonical: '/' },
+};
 
 export default function Home() {
   const posts = getAllPosts();

@@ -5,6 +5,8 @@ import { musicMeta } from '@/config/musicMeta';
 
 export const metadata: Metadata = {
   title: '音乐空间',
+  description: '自己写的歌与demo — 说唱、旋律碎片，以及一些还没做完的尝试。',
+  alternates: { canonical: '/music' },
 };
 
 const GITHUB_API = 'https://api.github.com/repos/suyuye/blog-images/contents/music';

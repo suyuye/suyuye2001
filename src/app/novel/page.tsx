@@ -4,6 +4,8 @@ import { getAllNovels } from '@/lib/novel';
 
 export const metadata: Metadata = {
   title: '小说',
+  description: '正在连载的故事 — 一天一章，读到哪里算哪里。',
+  alternates: { canonical: '/novel' },
 };
 
 export default function NovelPage() {

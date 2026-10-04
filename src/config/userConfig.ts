@@ -45,7 +45,7 @@ export const userConfig: UserConfig = {
     { label: 'Email', url: 'mailto:suyuye2001@163.com', icon: 'email' },
     // 微信设置为锚点链接，稍后配合代码实现弹窗显示二维码
     { label: '微信', url: 'https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/img/wechat2.jpg', icon: 'wechat' }, 
-    { label: 'RSS', url: '/blog', icon: 'rss' },
+    { label: 'RSS', url: '/feed.xml', icon: 'rss' },
   ],
 
   // Giscus 评论系统配置 — 前往 https://giscus.app 获取

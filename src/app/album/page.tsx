@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import { AlbumGate } from '@/components/AlbumGate';
 import type { AlbumPhoto } from '@/components/AlbumGrid';
+
+export const metadata: Metadata = {
+  title: '相册',
+  description: '用镜头记录生活 — 风景、日常，以及一些想留住的光影碎片。',
+  alternates: { canonical: '/album' },
+};
 
 const GITHUB_API = 'https://api.github.com/repos/suyuye/blog-images/contents/album';
 const CDN_BASE = 'https://cdn.jsdelivr.net/gh/suyuye/blog-images@main/album';

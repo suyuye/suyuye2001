@@ -1,5 +1,13 @@
+import type { Metadata } from 'next';
 import { getAllPosts } from '@/lib/mdx';
 import { BlogCard } from '@/components/BlogCard';
+
+export const metadata: Metadata = {
+  title: '文章',
+  description:
+    '技术探索、独立开发项目的记录与踩坑，以及一些不成体系的想法碎片。',
+  alternates: { canonical: '/blog' },
+};
 
 export default function BlogPage() {
   const posts = getAllPosts();
